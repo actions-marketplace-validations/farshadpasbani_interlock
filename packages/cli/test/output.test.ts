@@ -28,4 +28,14 @@ describe("formatVerdict", () => {
     expect(text).toContain("interlock.yml");
     expect(text).toContain("BLOCKED — agent-on-tier2");
   });
+
+  it("says so when the diff is empty", () => {
+    const empty: Verdict = {
+      tier: 0, authorClass: "human", mode: "observe",
+      perFile: [], violations: [], requirements: ["Tier 0 — behaviour-neutral; eligible for auto-merge when CI is green."],
+    };
+    const text = formatVerdict(empty);
+    expect(text).toContain("No changes detected");
+    expect(text).not.toContain("auto-merge");
+  });
 });
