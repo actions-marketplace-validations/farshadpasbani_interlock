@@ -1,0 +1,25 @@
+# Interlock policy — https://github.com/interlock-dev/interlock
+version: 1
+mode: observe            # flip to "enforce" once you trust the verdicts
+
+authors:
+  agents:
+    accounts: ["*[bot]"]
+    branches: ["claude/*", "codex/*", "agent/*"]
+    trailers: ["Co-Authored-By: Claude*", "Co-Authored-By: *Codex*"]
+
+tiers:
+  tier0:                 # behaviour-neutral — candidate for auto-merge when CI is green
+    - "docs/**"
+    - "**/*.md"
+  tier2:                 # protected paths — humans only
+    - "interlock.yml"
+    - ".github/**"
+    - "packages/core/src/policy.ts"
+    - "packages/core/src/gating.ts"
+    - "packages/core/src/classify.ts"
+    - "action/dist/**"
+
+rules:
+  agent-on-tier2: block
+  human-on-tier2: warn
