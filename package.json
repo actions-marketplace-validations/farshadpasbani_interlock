@@ -6,7 +6,7 @@
   "workspaces": ["packages/*", "action"],
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc -b packages/core",
+    "typecheck": "tsc -b packages/core packages/cli",
     "build": "npm run build --workspaces --if-present"
   },
   "devDependencies": {

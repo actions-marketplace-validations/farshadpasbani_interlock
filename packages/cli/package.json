@@ -1,0 +1,15 @@
+{
+  "name": "agent-interlock",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Tool-neutral governance gate for AI-agent pull requests: protected paths + tiered merge rules.",
+  "bin": { "agent-interlock": "./dist/index.js" },
+  "files": ["dist"],
+  "engines": { "node": ">=20" },
+  "scripts": { "build": "tsc -p ." },
+  "dependencies": {
+    "@interlock-dev/core": "0.1.0",
+    "commander": "^12.0.0"
+  }
+}
