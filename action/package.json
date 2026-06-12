@@ -1,0 +1,15 @@
+{
+  "name": "@interlock-dev/action",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "@interlock-dev/core": "0.1.0"
+  },
+  "devDependencies": { "esbuild": "^0.24.0" }
+}
