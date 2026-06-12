@@ -4,6 +4,48 @@ import { extractTrailers } from "@interlock-dev/core";
 
 export const MARKER = "<!-- interlock-verdict -->";
 
+/**
+ * Decode a repos.getContent file response. Returns null only for "file truly
+ * absent" shapes. Throws for oversized/undecodable content — an unreadable
+ * policy must fail LOUD, never be mistaken for "no policy".
+ */
+export function decodeContentResponse(data: {
+  content?: string;
+  encoding?: string;
+  size?: number;
+}): string | null {
+  if (data.encoding === "none" || (data.content === "" && (data.size ?? 0) > 0)) {
+    throw new Error(
+      `policy file too large to read inline (size: ${data.size ?? "unknown"} bytes) — refusing to treat as absent`
+    );
+  }
+  if (!data.content) return null;
+  return Buffer.from(data.content, "base64").toString("utf8");
+}
+
+export interface ReviewLike {
+  state: string;
+  user: { login: string } | null;
+}
+
+/**
+ * Logins whose LATEST approval-relevant review is APPROVED. Reviews arrive
+ * chronologically; CHANGES_REQUESTED or DISMISSED supersedes an earlier
+ * APPROVED, while COMMENTED never changes approval state.
+ */
+export function latestApprovers(reviews: ReviewLike[]): Set<string> {
+  const lastState = new Map<string, string>();
+  for (const r of reviews) {
+    if (!r.user) continue;
+    if (r.state === "APPROVED" || r.state === "CHANGES_REQUESTED" || r.state === "DISMISSED") {
+      lastState.set(r.user.login, r.state);
+    }
+  }
+  return new Set(
+    [...lastState.entries()].filter(([, s]) => s === "APPROVED").map(([l]) => l)
+  );
+}
+
 export interface ApiFile {
   filename: string;
   status: string;
@@ -19,6 +61,7 @@ export function mapFiles(apiFiles: ApiFile[]): ChangedFile[] {
         status: "renamed" as const,
       };
     }
+    // "copied" deliberately maps to modified WITHOUT previousPath: the copy's source was not modified, only the destination needs tiering.
     const status =
       f.status === "added" || f.status === "removed"
         ? (f.status as "added" | "removed")

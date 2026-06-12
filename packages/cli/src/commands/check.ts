@@ -54,13 +54,20 @@ export function runCheck(
     throw e;
   }
 
+  let files, author;
+  try {
+    files = deps.changedFiles(opts.base);
+    author = deps.authorInfo(opts.base);
+  } catch (e) {
+    deps.error(
+      `could not diff against "${opts.base}" — is the ref present? Try --base <your-trunk-branch>. (${(e as Error).message.split("\n")[0]})`
+    );
+    return 2;
+  }
+
   let verdict;
   try {
-    verdict = classify(
-      deps.changedFiles(opts.base),
-      deps.authorInfo(opts.base),
-      policy
-    );
+    verdict = classify(files, author, policy);
   } catch (e) {
     if (e instanceof InvalidPathError) {
       deps.error(e.message);

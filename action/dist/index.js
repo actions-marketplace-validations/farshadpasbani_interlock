@@ -19739,10 +19739,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       (0, command_1.issueCommand)("error", (0, utils_1.toCommandProperties)(properties), message instanceof Error ? message.toString() : message);
     }
     exports2.error = error;
-    function warning(message, properties = {}) {
+    function warning2(message, properties = {}) {
       (0, command_1.issueCommand)("warning", (0, utils_1.toCommandProperties)(properties), message instanceof Error ? message.toString() : message);
     }
-    exports2.warning = warning;
+    exports2.warning = warning2;
     function notice(message, properties = {}) {
       (0, command_1.issueCommand)("notice", (0, utils_1.toCommandProperties)(properties), message instanceof Error ? message.toString() : message);
     }
@@ -25524,12 +25524,12 @@ var require_log = __commonJS({
       if (logLevel === "debug")
         console.log(...messages);
     }
-    function warn(logLevel, warning) {
+    function warn(logLevel, warning2) {
       if (logLevel === "debug" || logLevel === "warn") {
         if (typeof node_process.emitWarning === "function")
-          node_process.emitWarning(warning);
+          node_process.emitWarning(warning2);
         else
-          console.warn(warning);
+          console.warn(warning2);
       }
     }
     exports2.debug = debug;
@@ -28998,9 +28998,9 @@ var require_composer = __commonJS({
         this.prelude = [];
         this.errors = [];
         this.warnings = [];
-        this.onError = (source, code, message, warning) => {
+        this.onError = (source, code, message, warning2) => {
           const pos = getErrorPos(source);
-          if (warning)
+          if (warning2)
             this.warnings.push(new errors.YAMLWarning(pos, code, message));
           else
             this.errors.push(new errors.YAMLParseError(pos, code, message));
@@ -29073,10 +29073,10 @@ ${cb}` : comment;
           console.dir(token, { depth: null });
         switch (token.type) {
           case "directive":
-            this.directives.add(token.source, (offset, message, warning) => {
+            this.directives.add(token.source, (offset, message, warning2) => {
               const pos = getErrorPos(token);
               pos[0] += offset;
-              this.onError(pos, "BAD_DIRECTIVE", message, warning);
+              this.onError(pos, "BAD_DIRECTIVE", message, warning2);
             });
             this.prelude.push(token.source);
             this.atDirectives = true;
@@ -31118,7 +31118,7 @@ var require_public_api = __commonJS({
       const doc = parseDocument(src, options);
       if (!doc)
         return null;
-      doc.warnings.forEach((warning) => log.warn(doc.options.logLevel, warning));
+      doc.warnings.forEach((warning2) => log.warn(doc.options.logLevel, warning2));
       if (doc.errors.length > 0) {
         if (doc.options.logLevel !== "silent")
           throw doc.errors[0];
@@ -37192,6 +37192,27 @@ function extractTrailers(commitMessages) {
 
 // src/helpers.ts
 var MARKER = "<!-- interlock-verdict -->";
+function decodeContentResponse(data) {
+  if (data.encoding === "none" || data.content === "" && (data.size ?? 0) > 0) {
+    throw new Error(
+      `policy file too large to read inline (size: ${data.size ?? "unknown"} bytes) \u2014 refusing to treat as absent`
+    );
+  }
+  if (!data.content) return null;
+  return Buffer.from(data.content, "base64").toString("utf8");
+}
+function latestApprovers(reviews) {
+  const lastState = /* @__PURE__ */ new Map();
+  for (const r of reviews) {
+    if (!r.user) continue;
+    if (r.state === "APPROVED" || r.state === "CHANGES_REQUESTED" || r.state === "DISMISSED") {
+      lastState.set(r.user.login, r.state);
+    }
+  }
+  return new Set(
+    [...lastState.entries()].filter(([, s]) => s === "APPROVED").map(([l]) => l)
+  );
+}
 function mapFiles(apiFiles) {
   return apiFiles.map((f) => {
     if (f.status === "renamed" && f.previous_filename) {
@@ -37237,21 +37258,20 @@ async function withRetry(fn) {
 
 // src/main.ts
 async function fetchPolicyText(octokit, policyPath, baseRef) {
+  let res;
   try {
-    const res = await withRetry(
+    res = await withRetry(
       () => octokit.rest.repos.getContent({
         ...github.context.repo,
         path: policyPath,
         ref: baseRef
       })
     );
-    const data = res.data;
-    if (!data.content) return null;
-    return Buffer.from(data.content, "base64").toString("utf8");
   } catch (e) {
     if (e.status === 404) return null;
     throw e;
   }
+  return decodeContentResponse(res.data);
 }
 async function countHumanApprovals(octokit, prNumber, policy) {
   const reviews = await withRetry(
@@ -37260,12 +37280,11 @@ async function countHumanApprovals(octokit, prNumber, policy) {
       pull_number: prNumber
     })
   );
-  const approvers = new Set(
-    reviews.filter((r) => r.state === "APPROVED" && r.user).filter(
-      (r) => classifyAuthor({ account: r.user.login }, policy) === "human"
-    ).map((r) => r.user.login)
+  const approvers = latestApprovers(reviews);
+  const humanApprovers = [...approvers].filter(
+    (login) => classifyAuthor({ account: login }, policy) === "human"
   );
-  return approvers.size;
+  return humanApprovers.length;
 }
 async function upsertComment(octokit, prNumber, body) {
   const comments = await withRetry(
@@ -37391,11 +37410,21 @@ async function run() {
   const humanApprovalCount = needsApprovals ? await countHumanApprovals(octokit, prNumber, policy) : 0;
   const gating = gate(verdict, { humanApprovalCount });
   const comment = buildComment(verdict, gating);
-  await upsertComment(octokit, prNumber, comment);
-  await setTierLabel(octokit, prNumber, verdict.tier);
-  await core.summary.addRaw(comment.replace(MARKER, "")).write();
+  let cosmeticError = null;
+  try {
+    await upsertComment(octokit, prNumber, comment);
+    await setTierLabel(octokit, prNumber, verdict.tier);
+    await core.summary.addRaw(comment.replace(MARKER, "")).write();
+  } catch (e) {
+    cosmeticError = e;
+    core.warning(`Interlock could not post results: ${cosmeticError.message}`);
+  }
   if (gating.shouldFail) {
     core.setFailed(gating.reasons.join("; "));
+  } else if (cosmeticError) {
+    core.setFailed(
+      `verdict OK (Tier ${verdict.tier}) but Interlock could not post results: ${cosmeticError.message}`
+    );
   } else {
     core.info(
       `Interlock: Tier ${verdict.tier} (${verdict.authorClass}), mode ${verdict.mode} \u2014 OK.`

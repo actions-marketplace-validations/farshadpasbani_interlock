@@ -11,7 +11,9 @@ import {
 } from "@interlock-dev/core";
 import {
   buildComment,
+  decodeContentResponse,
   extractTrailers,
+  latestApprovers,
   mapFiles,
   MARKER,
   withRetry,
@@ -24,21 +26,22 @@ async function fetchPolicyText(
   policyPath: string,
   baseRef: string
 ): Promise<string | null> {
+  let res;
   try {
-    const res = await withRetry(() =>
+    res = await withRetry(() =>
       octokit.rest.repos.getContent({
         ...github.context.repo,
         path: policyPath,
         ref: baseRef,
       })
     );
-    const data = res.data as { content?: string; encoding?: string };
-    if (!data.content) return null;
-    return Buffer.from(data.content, "base64").toString("utf8");
   } catch (e) {
     if ((e as { status?: number }).status === 404) return null;
     throw e;
   }
+  // decodeContentResponse throws for oversized/undecodable content — its throw
+  // propagates out of fetchPolicyText to run().catch → setFailed (fail LOUD).
+  return decodeContentResponse(res.data as { content?: string; encoding?: string; size?: number });
 }
 
 async function countHumanApprovals(
@@ -52,15 +55,11 @@ async function countHumanApprovals(
       pull_number: prNumber,
     })
   );
-  const approvers = new Set(
-    reviews
-      .filter((r) => r.state === "APPROVED" && r.user)
-      .filter(
-        (r) => classifyAuthor({ account: r.user!.login }, policy) === "human"
-      )
-      .map((r) => r.user!.login)
+  const approvers = latestApprovers(reviews);
+  const humanApprovers = [...approvers].filter(
+    (login) => classifyAuthor({ account: login }, policy) === "human"
   );
-  return approvers.size;
+  return humanApprovers.length;
 }
 
 async function upsertComment(
@@ -208,12 +207,22 @@ async function run(): Promise<void> {
   const gating = gate(verdict, { humanApprovalCount });
 
   const comment = buildComment(verdict, gating);
-  await upsertComment(octokit, prNumber, comment);
-  await setTierLabel(octokit, prNumber, verdict.tier);
-  await core.summary.addRaw(comment.replace(MARKER, "")).write();
+  let cosmeticError: Error | null = null;
+  try {
+    await upsertComment(octokit, prNumber, comment);
+    await setTierLabel(octokit, prNumber, verdict.tier);
+    await core.summary.addRaw(comment.replace(MARKER, "")).write();
+  } catch (e) {
+    cosmeticError = e as Error;
+    core.warning(`Interlock could not post results: ${cosmeticError.message}`);
+  }
 
   if (gating.shouldFail) {
     core.setFailed(gating.reasons.join("; "));
+  } else if (cosmeticError) {
+    core.setFailed(
+      `verdict OK (Tier ${verdict.tier}) but Interlock could not post results: ${cosmeticError.message}`
+    );
   } else {
     core.info(
       `Interlock: Tier ${verdict.tier} (${verdict.authorClass}), mode ${verdict.mode} — OK.`

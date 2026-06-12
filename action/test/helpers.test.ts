@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildComment,
+  decodeContentResponse,
   extractTrailers,
+  latestApprovers,
   mapFiles,
   MARKER,
   withRetry,
@@ -64,6 +66,56 @@ describe("buildComment", () => {
     expect(md).toContain(MARKER);
     expect(md).toContain("| `interlock.yml` | 2 |");
     expect(md).toContain("❌");
+  });
+});
+
+describe("decodeContentResponse", () => {
+  it("decodes base64 content", () => {
+    expect(
+      decodeContentResponse({
+        content: Buffer.from("version: 1").toString("base64"),
+        encoding: "base64",
+        size: 10,
+      })
+    ).toBe("version: 1");
+  });
+
+  it("throws LOUD on oversized files instead of treating them as absent", () => {
+    expect(() =>
+      decodeContentResponse({ content: "", encoding: "none", size: 2_000_000 })
+    ).toThrow(/too large/);
+  });
+
+  it("returns null when content is genuinely absent", () => {
+    expect(decodeContentResponse({})).toBe(null);
+  });
+});
+
+describe("latestApprovers", () => {
+  const u = (login: string) => ({ login });
+  it("approve then request-changes revokes the approval", () => {
+    expect(
+      latestApprovers([
+        { state: "APPROVED", user: u("a") },
+        { state: "CHANGES_REQUESTED", user: u("a") },
+      ]).size
+    ).toBe(0);
+  });
+  it("approve then comment keeps the approval", () => {
+    expect(
+      latestApprovers([
+        { state: "APPROVED", user: u("a") },
+        { state: "COMMENTED", user: u("a") },
+      ]).has("a")
+    ).toBe(true);
+  });
+  it("dismissed approvals do not count", () => {
+    expect(
+      latestApprovers([
+        { state: "APPROVED", user: u("a") },
+        { state: "DISMISSED", user: u("a") },
+      ]).size
+    ).toBe(0);
   });
 });
 

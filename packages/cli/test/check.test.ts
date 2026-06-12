@@ -73,6 +73,16 @@ describe("runCheck", () => {
     expect(d.err.join("\n")).toContain("..");
   });
 
+  it("exits 2 with a readable hint when the base ref is missing", () => {
+    const d = deps({
+      changedFiles: () => {
+        throw new Error("fatal: bad revision 'main...HEAD'");
+      },
+    });
+    expect(runCheck({ base: "main", json: false }, d)).toBe(2);
+    expect(d.err.join("\n")).toContain("--base");
+  });
+
   it("--json emits machine-readable verdict", () => {
     const d = deps();
     runCheck({ base: "main", json: true }, d);
