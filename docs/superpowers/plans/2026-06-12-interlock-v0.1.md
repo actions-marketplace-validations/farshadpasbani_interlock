@@ -946,6 +946,8 @@ git add -A && git commit -m "feat(core): enforce-mode gating and public API"
 
 ---
 
+> **Milestone note (core complete):** Opus review of 819df2d..319a169 found two criticals, both fixed in 5c9fa8a with red-first TDD: (C1) path-normalization bypass — `./`/`\`/leading-`/` dodged tier2 globs; now normalized at the core chokepoint, `..` rejected via `InvalidPathError` (exported; adapters must catch → CLI exit 2 / Action setFailed). (C2) empty-string globs now rejected at parse time. Core suite: 37 tests. Deferred as acceptable: matcher precompilation (M1, perf-only).
+
 ### Task 7: CLI package skeleton + git diff parsing
 
 **Files:**
