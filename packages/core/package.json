@@ -1,0 +1,15 @@
+{
+  "name": "@interlock-dev/core",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": { "build": "tsc -p ." },
+  "dependencies": {
+    "picomatch": "^4.0.0",
+    "yaml": "^2.4.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": { "@types/picomatch": "^3.0.0" }
+}
