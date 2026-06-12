@@ -69,7 +69,7 @@ Rule of thumb throughout: **core is pure** (no fs, no network, no process). Anyt
 - Create: `packages/core/package.json`, `packages/core/tsconfig.json`, `packages/core/src/index.ts`
 - Create: `packages/core/test/smoke.test.ts`
 
-- [ ] **Step 1: Root files**
+- [x] **Step 1: Root files**
 
 `package.json`:
 
@@ -143,7 +143,7 @@ dist/
 
 (Note the exception: `action/dist/` is committed — GitHub Actions runs the bundled file.)
 
-- [ ] **Step 2: core package skeleton**
+- [x] **Step 2: core package skeleton**
 
 `packages/core/package.json`:
 
@@ -194,12 +194,12 @@ describe("scaffold", () => {
 });
 ```
 
-- [ ] **Step 3: Install and verify**
+- [x] **Step 3: Install and verify**
 
 Run: `npm install && npx vitest run`
 Expected: 1 test file, 1 passed.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit** *(done: e073ea3 + review fixes 819df2d — typecheck scoped to existing pkgs, core exports map added; extend typecheck script in T7/T12)*
 
 ```bash
 git add -A && git commit -m "chore: monorepo scaffold (workspaces, vitest, core skeleton)"
