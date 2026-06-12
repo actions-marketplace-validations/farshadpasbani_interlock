@@ -447,7 +447,7 @@ git add -A && git commit -m "feat(core): policy schema with strict validation an
 - Create: `packages/core/src/classify.ts` (first half)
 - Test: `packages/core/test/classify.test.ts` (first half)
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/core/test/classify.test.ts`:
 
@@ -537,12 +537,12 @@ describe("tierForPath", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: FAIL — cannot find module `../src/classify.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/core/src/classify.ts`:
 
@@ -593,12 +593,12 @@ export function tierForPath(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A && git commit -m "feat(core): author classification and path tiering"
