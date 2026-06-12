@@ -1381,7 +1381,7 @@ git add -A && git commit -m "feat(cli): check command with advisory exit codes"
 - Create: `packages/cli/src/commands/init.ts`
 - Test: `packages/cli/test/init.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/init.test.ts`:
 
@@ -1448,12 +1448,12 @@ describe("WORKFLOW_SNIPPET", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/init.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/commands/init.ts`:
 
@@ -1553,7 +1553,7 @@ export function runInit(opts: InitOptions, io: InitIo): number {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass, commit**
+- [x] **Step 4: Run tests to verify they pass, commit**
 
 Run: `npx vitest run packages/cli/test/init.test.ts`
 Expected: all pass.
@@ -1570,7 +1570,7 @@ git add -A && git commit -m "feat(cli): init scaffolds policy from detected layo
 - Create: `packages/cli/src/commands/explain.ts`, `packages/cli/src/index.ts`
 - Test: `packages/cli/test/explain.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/explain.test.ts`:
 
@@ -1612,12 +1612,12 @@ describe("runExplain", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/explain.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 3: Implement explain**
+- [x] **Step 3: Implement explain**
 
 `packages/cli/src/commands/explain.ts`:
 
@@ -1657,7 +1657,7 @@ export function runExplain(
 }
 ```
 
-- [ ] **Step 4: Wire the bin entry**
+- [x] **Step 4: Wire the bin entry**
 
 `packages/cli/src/index.ts`:
 
@@ -1708,7 +1708,7 @@ program
 program.parse();
 ```
 
-- [ ] **Step 5: Run all tests, build, smoke-test the bin, commit**
+- [x] **Step 5: Run all tests, build, smoke-test the bin, commit**
 
 Run: `npx vitest run && npx tsc -b packages/cli`
 Expected: green.
