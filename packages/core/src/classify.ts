@@ -10,6 +10,36 @@ import type {
   Violation,
 } from "./types.js";
 
+export class InvalidPathError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidPathError";
+  }
+}
+
+/**
+ * Core path contract: repo-relative, POSIX-separated, no leading slash, no "..".
+ * Normalization happens here — the one chokepoint every classification passes
+ * through — so no adapter can feed a path that dodges a protected glob:
+ * backslashes → "/", leading "./" and "/" stripped, ".." rejected loudly
+ * (a real VCS diff never emits one; refusing beats guessing).
+ */
+function normalizePath(raw: string): string {
+  const p = raw
+    .replace(/\\/g, "/")
+    .replace(/^(\.\/)+/, "")
+    .replace(/^\/+/, "");
+  if (p === "") {
+    throw new InvalidPathError(`empty path after normalization: "${raw}"`);
+  }
+  if (p.split("/").includes("..")) {
+    throw new InvalidPathError(
+      `path contains ".." segment: "${raw}" — refusing to classify`
+    );
+  }
+  return p;
+}
+
 /** Paths: brackets behave as globs; dotfiles match (a guard must see dotfiles). */
 const PATH_OPTS = { dot: true } as const;
 /** Authors: nobracket so "*[bot]" matches literal "[bot]", not a char class. */
@@ -41,9 +71,10 @@ export function classifyAuthor(
 }
 
 export function tierForPath(
-  path: string,
+  rawPath: string,
   policy: Policy
 ): { tier: Tier; matchedRule: string } {
+  const path = normalizePath(rawPath);
   const t2 = firstMatch(path, policy.tiers.tier2, PATH_OPTS);
   if (t2) return { tier: 2, matchedRule: t2 };
   const t0 = firstMatch(path, policy.tiers.tier0, PATH_OPTS);
@@ -61,8 +92,10 @@ export function classify(
   // Renames count as touching both the old and the new path.
   const paths = new Set<string>();
   for (const f of changedFiles) {
-    paths.add(f.path);
-    if (f.previousPath && f.previousPath !== f.path) paths.add(f.previousPath);
+    paths.add(normalizePath(f.path));
+    if (f.previousPath && f.previousPath !== f.path) {
+      paths.add(normalizePath(f.previousPath));
+    }
   }
 
   const perFile: FileVerdict[] = [...paths].map((path) => ({

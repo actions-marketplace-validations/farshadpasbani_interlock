@@ -1,6 +1,11 @@
 export type Tier = 0 | 1 | 2;
 
 export interface ChangedFile {
+  /**
+   * Repo-relative path. Contract: POSIX separators, no leading slash, no "..".
+   * Core normalizes separators / leading "./" defensively and rejects ".."
+   * with InvalidPathError — adapters should still pass clean VCS-relative paths.
+   */
   path: string;
   /** Old path for renames — counts as touched too. */
   previousPath?: string;

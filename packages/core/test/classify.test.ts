@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classify, classifyAuthor, tierForPath } from "../src/classify.js";
+import { classify, classifyAuthor, tierForPath, InvalidPathError } from "../src/classify.js";
 import { parsePolicy } from "../src/policy.js";
 import type { ChangedFile } from "../src/types.js";
 
@@ -161,5 +161,43 @@ describe("classify", () => {
       ).tier;
       expect(after).toBeGreaterThanOrEqual(before);
     }
+  });
+});
+
+describe("path normalization (adversarial)", () => {
+  it("./-prefixed paths still hit protected globs", () => {
+    expect(tierForPath("./.github/workflows/ci.yml", policy).tier).toBe(2);
+    expect(tierForPath("./interlock.yml", policy).tier).toBe(2);
+  });
+
+  it("leading-slash paths still hit protected globs", () => {
+    expect(tierForPath("/.github/workflows/ci.yml", policy).tier).toBe(2);
+  });
+
+  it("backslash separators still hit protected globs", () => {
+    expect(tierForPath(".github\\workflows\\ci.yml", policy).tier).toBe(2);
+  });
+
+  it("classify normalizes end-to-end — an agent cannot dodge the gate", () => {
+    const v = classify(
+      [{ path: "./.github/workflows/ci.yml", status: "modified" }],
+      agentAuthor,
+      policy
+    );
+    expect(v.tier).toBe(2);
+    expect(v.violations[0]?.kind).toBe("agent-on-tier2");
+  });
+
+  it('rejects ".." segments loudly', () => {
+    expect(() => tierForPath("foo/../.github/x.yml", policy)).toThrow(
+      InvalidPathError
+    );
+  });
+
+  it("minimal policy classifies everything tier 1 without violations", () => {
+    const minimal = parsePolicy("version: 1");
+    const v = classify(files("anything.ts"), humanAuthor, minimal);
+    expect(v.tier).toBe(1);
+    expect(v.violations).toEqual([]);
   });
 });

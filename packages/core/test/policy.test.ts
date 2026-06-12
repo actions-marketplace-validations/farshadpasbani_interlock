@@ -60,4 +60,10 @@ describe("parsePolicy", () => {
       parsePolicy("version: 1\nrules:\n  agent-on-tier2: maybe")
     ).toThrow(/agent-on-tier2/);
   });
+
+  it("rejects empty-string globs at parse time", () => {
+    expect(() =>
+      parsePolicy('version: 1\ntiers:\n  tier2: [""]')
+    ).toThrow(/non-empty/);
+  });
 });

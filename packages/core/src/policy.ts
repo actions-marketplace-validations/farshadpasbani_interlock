@@ -8,11 +8,15 @@ export class PolicyError extends Error {
   }
 }
 
+const globList = z
+  .array(z.string().min(1, "glob must be a non-empty string"))
+  .default([]);
+
 const agentsSchema = z
   .object({
-    accounts: z.array(z.string()).default([]),
-    branches: z.array(z.string()).default([]),
-    trailers: z.array(z.string()).default([]),
+    accounts: globList,
+    branches: globList,
+    trailers: globList,
   })
   .strict()
   .default({});
@@ -26,8 +30,8 @@ export const policySchema = z
     authors: z.object({ agents: agentsSchema }).strict().default({}),
     tiers: z
       .object({
-        tier0: z.array(z.string()).default([]),
-        tier2: z.array(z.string()).default([]),
+        tier0: globList,
+        tier2: globList,
       })
       .strict()
       .default({}),

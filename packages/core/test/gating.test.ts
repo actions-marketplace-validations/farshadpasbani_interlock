@@ -59,4 +59,25 @@ describe("gate", () => {
     });
     expect(gate(v).shouldFail).toBe(false);
   });
+
+  it("warn-only violations never fail, even in enforce mode", () => {
+    const v = verdict({
+      violations: [
+        { kind: "human-on-tier2", setting: "warn", paths: ["interlock.yml"] },
+      ],
+    });
+    const g = gate(v);
+    expect(g.shouldFail).toBe(false);
+    expect(g.reasons).toEqual([]);
+  });
+
+  it("block wins when mixed with warn", () => {
+    const v = verdict({
+      violations: [
+        { kind: "human-on-tier2", setting: "warn", paths: ["a.yml"] },
+        { kind: "agent-on-tier2", setting: "block", paths: ["b.yml"] },
+      ],
+    });
+    expect(gate(v).shouldFail).toBe(true);
+  });
 });
