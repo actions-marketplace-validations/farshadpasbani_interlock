@@ -1,0 +1,17 @@
+{
+  "name": "interlock-monorepo",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "workspaces": ["packages/*", "action"],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -b packages/core && tsc -p packages/cli && tsc -p action",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^3.0.0",
+    "@types/node": "^20.14.0"
+  }
+}

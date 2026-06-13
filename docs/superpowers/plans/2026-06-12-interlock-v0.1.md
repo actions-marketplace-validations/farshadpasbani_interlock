@@ -69,7 +69,7 @@ Rule of thumb throughout: **core is pure** (no fs, no network, no process). Anyt
 - Create: `packages/core/package.json`, `packages/core/tsconfig.json`, `packages/core/src/index.ts`
 - Create: `packages/core/test/smoke.test.ts`
 
-- [ ] **Step 1: Root files**
+- [x] **Step 1: Root files**
 
 `package.json`:
 
@@ -143,7 +143,7 @@ dist/
 
 (Note the exception: `action/dist/` is committed — GitHub Actions runs the bundled file.)
 
-- [ ] **Step 2: core package skeleton**
+- [x] **Step 2: core package skeleton**
 
 `packages/core/package.json`:
 
@@ -194,12 +194,12 @@ describe("scaffold", () => {
 });
 ```
 
-- [ ] **Step 3: Install and verify**
+- [x] **Step 3: Install and verify**
 
 Run: `npm install && npx vitest run`
 Expected: 1 test file, 1 passed.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit** *(done: e073ea3 + review fixes 819df2d — typecheck scoped to existing pkgs, core exports map added; extend typecheck script in T7/T12)*
 
 ```bash
 git add -A && git commit -m "chore: monorepo scaffold (workspaces, vitest, core skeleton)"
@@ -212,7 +212,7 @@ git add -A && git commit -m "chore: monorepo scaffold (workspaces, vitest, core 
 **Files:**
 - Create: `packages/core/src/types.ts`
 
-- [ ] **Step 1: Write the types (no test needed — types only)**
+- [x] **Step 1: Write the types (no test needed — types only)** *(done: 2848621, verified identical to spec)*
 
 `packages/core/src/types.ts`:
 
@@ -263,7 +263,7 @@ export interface Verdict {
 }
 ```
 
-- [ ] **Step 2: Typecheck and commit**
+- [x] **Step 2: Typecheck and commit**
 
 Run: `npx tsc -b packages/core`
 Expected: no errors.
@@ -280,7 +280,7 @@ git add -A && git commit -m "feat(core): verdict and policy domain types"
 - Create: `packages/core/src/policy.ts`
 - Test: `packages/core/test/policy.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/core/test/policy.test.ts`:
 
@@ -350,12 +350,12 @@ describe("parsePolicy", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/core/test/policy.test.ts`
 Expected: FAIL — cannot find module `../src/policy.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/core/src/policy.ts`:
 
@@ -428,12 +428,12 @@ export function parsePolicy(yamlText: string): Policy {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run packages/core/test/policy.test.ts`
 Expected: all 7 pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A && git commit -m "feat(core): policy schema with strict validation and defaults"
@@ -447,7 +447,7 @@ git add -A && git commit -m "feat(core): policy schema with strict validation an
 - Create: `packages/core/src/classify.ts` (first half)
 - Test: `packages/core/test/classify.test.ts` (first half)
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/core/test/classify.test.ts`:
 
@@ -537,12 +537,12 @@ describe("tierForPath", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: FAIL — cannot find module `../src/classify.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/core/src/classify.ts`:
 
@@ -593,12 +593,12 @@ export function tierForPath(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A && git commit -m "feat(core): author classification and path tiering"
@@ -612,7 +612,7 @@ git add -A && git commit -m "feat(core): author classification and path tiering"
 - Modify: `packages/core/src/classify.ts` (append)
 - Test: `packages/core/test/classify.test.ts` (append)
 
-- [ ] **Step 1: Write the failing tests (append to classify.test.ts)**
+- [x] **Step 1: Write the failing tests (append to classify.test.ts)**
 
 ```ts
 import { classify } from "../src/classify.js";
@@ -700,12 +700,12 @@ describe("classify", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify the new ones fail**
+- [x] **Step 2: Run tests to verify the new ones fail**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: FAIL — `classify` is not exported.
 
-- [ ] **Step 3: Implement (append to classify.ts)**
+- [x] **Step 3: Implement (append to classify.ts)**
 
 ```ts
 import type {
@@ -794,12 +794,12 @@ function buildRequirements(
 
 (Adjust the existing import line at the top of `classify.ts` to include the new types: `import type { AuthorClass, AuthorInfo, ChangedFile, FileVerdict, Tier, Verdict, Violation } from "./types.js";` — one import statement, not two.)
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run packages/core/test/classify.test.ts`
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A && git commit -m "feat(core): classify() verdict with violations and requirements"
@@ -813,7 +813,7 @@ git add -A && git commit -m "feat(core): classify() verdict with violations and 
 - Create: `packages/core/src/gating.ts`
 - Test: `packages/core/test/gating.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/core/test/gating.test.ts`:
 
@@ -882,12 +882,12 @@ describe("gate", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/core/test/gating.test.ts`
 Expected: FAIL — cannot find module `../src/gating.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/core/src/gating.ts`:
 
@@ -919,7 +919,7 @@ export function gate(verdict: Verdict, ctx: GatingContext = {}): GatingResult {
 }
 ```
 
-- [ ] **Step 4: Run tests, then export the public API**
+- [x] **Step 4: Run tests, then export the public API**
 
 Run: `npx vitest run packages/core/test/gating.test.ts`
 Expected: all pass.
@@ -938,13 +938,15 @@ Delete `packages/core/test/smoke.test.ts` (scaffold-only; superseded by real tes
 Run: `npx vitest run && npx tsc -b packages/core`
 Expected: all green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A && git commit -m "feat(core): enforce-mode gating and public API"
 ```
 
 ---
+
+> **Milestone note (core complete):** Opus review of 819df2d..319a169 found two criticals, both fixed in 5c9fa8a with red-first TDD: (C1) path-normalization bypass — `./`/`\`/leading-`/` dodged tier2 globs; now normalized at the core chokepoint, `..` rejected via `InvalidPathError` (exported; adapters must catch → CLI exit 2 / Action setFailed). (C2) empty-string globs now rejected at parse time. Core suite: 37 tests. Deferred as acceptable: matcher precompilation (M1, perf-only).
 
 ### Task 7: CLI package skeleton + git diff parsing
 
@@ -953,7 +955,7 @@ git add -A && git commit -m "feat(core): enforce-mode gating and public API"
 - Create: `packages/cli/src/git.ts`
 - Test: `packages/cli/test/git.test.ts`
 
-- [ ] **Step 1: Package skeleton**
+- [x] **Step 1: Package skeleton**
 
 `packages/cli/package.json`:
 
@@ -989,7 +991,7 @@ git add -A && git commit -m "feat(core): enforce-mode gating and public API"
 Run: `npm install`
 Expected: workspace link resolves `@interlock-dev/core`.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 `packages/cli/test/git.test.ts`:
 
@@ -1038,12 +1040,12 @@ describe("getAuthorInfo", () => {
 });
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [x] **Step 3: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/git.test.ts`
 Expected: FAIL — cannot find module `../src/git.js`.
 
-- [ ] **Step 4: Implement**
+- [x] **Step 4: Implement**
 
 `packages/cli/src/git.ts`:
 
@@ -1099,7 +1101,7 @@ export function getAuthorInfo(base: string, exec: Exec = defaultExec): AuthorInf
 }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass, commit**
+- [x] **Step 5: Run tests to verify they pass, commit**
 
 Run: `npx vitest run packages/cli/test/git.test.ts`
 Expected: all pass.
@@ -1116,7 +1118,7 @@ git add -A && git commit -m "feat(cli): git diff parsing and author info collect
 - Create: `packages/cli/src/output.ts`
 - Test: `packages/cli/test/output.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `packages/cli/test/output.test.ts`:
 
@@ -1154,12 +1156,12 @@ describe("formatVerdict", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run packages/cli/test/output.test.ts`
 Expected: FAIL — cannot find module `../src/output.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/output.ts`:
 
@@ -1183,7 +1185,7 @@ export function formatVerdict(verdict: Verdict): string {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes, commit**
+- [x] **Step 4: Run test to verify it passes, commit**
 
 Run: `npx vitest run packages/cli/test/output.test.ts`
 Expected: pass.
@@ -1200,7 +1202,7 @@ git add -A && git commit -m "feat(cli): human-readable verdict formatting"
 - Create: `packages/cli/src/commands/check.ts`
 - Test: `packages/cli/test/check.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/check.test.ts`:
 
@@ -1281,12 +1283,12 @@ describe("runCheck", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/check.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/commands/check.ts`:
 
@@ -1362,7 +1364,7 @@ export function runCheck(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass, commit**
+- [x] **Step 4: Run tests to verify they pass, commit**
 
 Run: `npx vitest run packages/cli/test/check.test.ts`
 Expected: all pass.
@@ -1379,7 +1381,7 @@ git add -A && git commit -m "feat(cli): check command with advisory exit codes"
 - Create: `packages/cli/src/commands/init.ts`
 - Test: `packages/cli/test/init.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/init.test.ts`:
 
@@ -1446,12 +1448,12 @@ describe("WORKFLOW_SNIPPET", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/init.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/commands/init.ts`:
 
@@ -1551,7 +1553,7 @@ export function runInit(opts: InitOptions, io: InitIo): number {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass, commit**
+- [x] **Step 4: Run tests to verify they pass, commit**
 
 Run: `npx vitest run packages/cli/test/init.test.ts`
 Expected: all pass.
@@ -1568,7 +1570,7 @@ git add -A && git commit -m "feat(cli): init scaffolds policy from detected layo
 - Create: `packages/cli/src/commands/explain.ts`, `packages/cli/src/index.ts`
 - Test: `packages/cli/test/explain.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/explain.test.ts`:
 
@@ -1610,12 +1612,12 @@ describe("runExplain", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run packages/cli/test/explain.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 3: Implement explain**
+- [x] **Step 3: Implement explain**
 
 `packages/cli/src/commands/explain.ts`:
 
@@ -1655,7 +1657,7 @@ export function runExplain(
 }
 ```
 
-- [ ] **Step 4: Wire the bin entry**
+- [x] **Step 4: Wire the bin entry**
 
 `packages/cli/src/index.ts`:
 
@@ -1706,7 +1708,7 @@ program
 program.parse();
 ```
 
-- [ ] **Step 5: Run all tests, build, smoke-test the bin, commit**
+- [x] **Step 5: Run all tests, build, smoke-test the bin, commit**
 
 Run: `npx vitest run && npx tsc -b packages/cli`
 Expected: green.
@@ -1726,7 +1728,7 @@ git add -A && git commit -m "feat(cli): explain command and commander bin wiring
 - Create: `action/package.json`, `action/tsconfig.json`, `action/src/helpers.ts`
 - Test: `action/test/helpers.test.ts`
 
-- [ ] **Step 1: Package skeleton**
+- [x] **Step 1: Package skeleton**
 
 `action/package.json`:
 
@@ -1760,7 +1762,7 @@ git add -A && git commit -m "feat(cli): explain command and commander bin wiring
 
 Run: `npm install`
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 `action/test/helpers.test.ts`:
 
@@ -1852,12 +1854,12 @@ describe("withRetry", () => {
 });
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [x] **Step 3: Run tests to verify they fail**
 
 Run: `npx vitest run action/test/helpers.test.ts`
 Expected: FAIL — cannot find module.
 
-- [ ] **Step 4: Implement**
+- [x] **Step 4: Implement**
 
 `action/src/helpers.ts`:
 
@@ -1936,7 +1938,7 @@ export async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
 }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass, commit**
+- [x] **Step 5: Run tests to verify they pass, commit**
 
 Run: `npx vitest run action/test/helpers.test.ts`
 Expected: all pass.
@@ -1953,7 +1955,7 @@ git add -A && git commit -m "feat(action): pure helpers — file mapping, traile
 - Create: `action/src/main.ts`, `action/action.yml`
 - Modify: `action/package.json` (already has build script)
 
-- [ ] **Step 1: action.yml**
+- [x] **Step 1: action.yml**
 
 `action/action.yml`:
 
@@ -1978,7 +1980,7 @@ runs:
 
 Note: `action.yml` lives in `action/`, but the published action is referenced as `interlock-dev/interlock@v1` — at launch (checklist below) a root-level `action.yml` symlink-equivalent is created by copying `action/action.yml` to the repo root with `main: "action/dist/index.js"`. Add that file at launch, not now.
 
-- [ ] **Step 2: Implement main.ts**
+- [x] **Step 2: Implement main.ts**
 
 `action/src/main.ts`:
 
@@ -2199,7 +2201,7 @@ async function run(): Promise<void> {
 run().catch((e: Error) => core.setFailed(`Interlock error: ${e.message}`));
 ```
 
-- [ ] **Step 3: Typecheck, bundle, verify the bundle is self-contained**
+- [x] **Step 3: Typecheck, bundle, verify the bundle is self-contained**
 
 Run: `npx tsc -p action && npm run build -w action`
 Expected: `action/dist/index.js` exists.
@@ -2207,7 +2209,7 @@ Expected: `action/dist/index.js` exists.
 Run: `node -e "const m=require('./action/dist/index.js')" 2>&1 | head -3`
 Expected: it executes and logs an Interlock failure about missing input/event (proves the bundle loads standalone without node_modules) — any output containing "Interlock" is success; module-not-found errors are failure.
 
-- [ ] **Step 4: Run the full suite and commit (including dist)**
+- [x] **Step 4: Run the full suite and commit (including dist)**
 
 Run: `npx vitest run && npx tsc -b packages/core packages/cli && npx tsc -p action`
 Expected: green.
@@ -2218,12 +2220,14 @@ git add -A && git commit -m "feat(action): verdict check, sticky comment, tier l
 
 ---
 
+> **Milestone note (adapters complete):** Opus review of 5cfdffb..HEAD → fixes in 4c768a2: (C1) oversize-policy fail-open closed via decodeContentResponse throwing loud; (I1) CLI git errors → exit 2 with hint; (I3) stale approvals revoked via latestApprovers fold; (M3) verdict survives cosmetic-write failures; (M2) copied→modified comment. Suite: 75 tests. Doc duties pushed to T15: README must document author-detection divergence (CLI = git author name, Action = GitHub login) and exit-code contract "1 = blocking violation (stronger than warn)"; spec permissions wording (issues:write, not checks:write) ALREADY correct in workflow snippet — amend spec §Action accordingly.
+
 ### Task 14: Dogfood — Interlock governs its own repo
 
 **Files:**
 - Create: `interlock.yml` (repo root), `.github/workflows/interlock.yml`
 
-- [ ] **Step 1: Generate our own policy with our own tool**
+- [x] **Step 1: Generate our own policy with our own tool**
 
 Run: `node packages/cli/dist/index.js init`
 Expected: `interlock.yml` written; snippet printed.
@@ -2236,7 +2240,7 @@ Then edit the generated `interlock.yml` tier2 list to also protect the engine's 
     - "action/dist/**"
 ```
 
-- [ ] **Step 2: Add the workflow**
+- [x] **Step 2: Add the workflow**
 
 Write `.github/workflows/interlock.yml` with exactly the printed snippet, except the action reference uses the local path until the org repo exists:
 
@@ -2259,7 +2263,7 @@ jobs:
 
 (`uses: ./action` requires checkout; the published `interlock-dev/interlock@v1` form does not. Swap at launch.)
 
-- [ ] **Step 3: Sanity-check our own verdict locally, commit**
+- [x] **Step 3: Sanity-check our own verdict locally, commit**
 
 Run: `node packages/cli/dist/index.js explain interlock.yml`
 Expected: `interlock.yml → Tier 2 (rule: interlock.yml)`.
@@ -2278,7 +2282,7 @@ git add -A && git commit -m "chore: dogfood — interlock governs its own reposi
 **Files:**
 - Create: `README.md`, `LICENSE`
 
-- [ ] **Step 1: Write README.md**
+- [x] **Step 1: Write README.md**
 
 Structure (write actual prose, not placeholders):
 
@@ -2293,12 +2297,12 @@ Structure (write actual prose, not placeholders):
 
 `LICENSE`: the standard Apache-2.0 text, copyright 2026 Farshad Pasbani.
 
-- [ ] **Step 2: Final full gate**
+- [x] **Step 2: Final full gate**
 
 Run: `npx vitest run && npx tsc -b packages/core packages/cli && npx tsc -p action && npm run build -w action`
 Expected: everything green, bundle reproducible (git diff on `action/dist` is empty or committed).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add -A && git commit -m "docs: README with the 10-minute adoption path; Apache-2.0 LICENSE"
