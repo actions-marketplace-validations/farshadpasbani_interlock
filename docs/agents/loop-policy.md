@@ -20,7 +20,7 @@ shadow_clean_count: 0       # a sovereign increments this as audits pass; any di
 worker_cap: 3               # max concurrent worker agents
 replenish_below: 6          # ready-for-agent depth that triggers replenishment — 2× worker_cap
 stale_after_cycles: 2       # in-progress with no commit activity for this many cycles → reclaim
-journal_issue: null         # the pinned Loop Journal issue number; set once created
+journal_issue: 2         # the pinned Loop Journal issue number; set once created
 ```
 
 `paused` → cycle stops at step 0. `shadow` → full cycle, **no merges**, qualifying PRs get
