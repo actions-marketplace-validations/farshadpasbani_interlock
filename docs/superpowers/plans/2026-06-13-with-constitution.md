@@ -527,7 +527,7 @@ git commit -m "feat(cli): detectStack (npm/uv/fallback) for constitution scaffol
 - Create: `packages/cli/src/constitution/render.ts`
 - Test: `packages/cli/test/constitution-render.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/constitution-render.test.ts`:
 
@@ -588,12 +588,12 @@ describe("OUTPUT_MAP", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: FAIL — cannot find module `../src/constitution/render.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/constitution/render.ts`:
 
@@ -651,7 +651,7 @@ export const OUTPUT_MAP: Record<string, string> = {
 };
 ```
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: all pass.
@@ -669,7 +669,7 @@ git commit -m "feat(cli): render — germlinePaths, buildValues, fillPlaceholder
 - Modify: `packages/cli/src/constitution/render.ts` (append)
 - Test: `packages/cli/test/constitution-render.test.ts` (append)
 
-- [ ] **Step 1: Append failing tests**
+- [x] **Step 1: Append failing tests**
 
 ```ts
 import { buildCi, buildClaudeMd } from "../src/constitution/render.js";
@@ -698,12 +698,12 @@ describe("buildClaudeMd", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: FAIL — `buildCi`/`buildClaudeMd` not exported.
 
-- [ ] **Step 3: Implement (append to render.ts)**
+- [x] **Step 3: Implement (append to render.ts)**
 
 ```ts
 export function buildCi(stack: StackCommands): string {
@@ -741,7 +741,7 @@ run /master-loop to operate the fleet. Status: shadow (see docs/agents/loop-poli
 }
 ```
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: all pass.
