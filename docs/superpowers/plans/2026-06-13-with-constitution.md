@@ -56,7 +56,7 @@ This is a content task, not logic. The source is the canonical template on this 
 (same wording we want, but with values filled in — use them only to copy the *solo clause
 wording*, never their filled-in values or interlock-specific paths).
 
-- [ ] **Step 1: Copy the 14 template files verbatim**
+- [x] **Step 1: Copy the 14 template files verbatim**
 
 ```bash
 cd /Users/farshad/projects/interlock
@@ -73,7 +73,7 @@ cp ~/.claude/constitution/adapters/cursor-master-loop.mdc packages/cli/templates
 Do NOT copy `pacemaker/`, `.git/`, `README.md`, `cursor-user-rules.md`, or `ci-templates/`
 (CI is generated, not templated).
 
-- [ ] **Step 2: Apply the solo adaptation to CONSTITUTION.md**
+- [x] **Step 2: Apply the solo adaptation to CONSTITUTION.md**
 
 In `packages/cli/templates/constitution/CONSTITUTION.md`, the canonical Tier-1 clause
 (Article III) is team-default. Replace it with the solo wording. Find:
@@ -93,7 +93,7 @@ Replace with:
   sovereign at genesis; it can be reinstated by amendment (Article X) at any time.
 ```
 
-- [ ] **Step 3: Apply the solo adaptation to loop-policy.md (Tier-1 + the germline-globs placeholder)**
+- [x] **Step 3: Apply the solo adaptation to loop-policy.md (Tier-1 + the germline-globs placeholder)**
 
 (a) The Tier-1 heading/body in `loop-policy.md` §2 is team-default. Find the canonical Tier-1
 section header line:
@@ -127,7 +127,7 @@ Leave the "Germline path globs (present from day one)" list above it as-is (thos
 controller's own files: CONSTITUTION.md, loop-policy.md, master-loop.md, adapters, workflows,
 CODEOWNERS).
 
-- [ ] **Step 4: Apply the solo adaptation to master-loop.md and field-guide.md**
+- [x] **Step 4: Apply the solo adaptation to master-loop.md and field-guide.md**
 
 In both files, the Tier-1 merge rule appears in a table row / tier list. Make the Tier-1
 condition read "green CI + both review agents clean" with no human-approval requirement
@@ -141,7 +141,7 @@ condition read "green CI + both review agents clean" with no human-approval requ
 Use the repo's `docs/agents/master-loop.md` and `docs/agents/README.md` as the reference for the
 exact solo phrasing — copy the *wording* of the Tier-1 cells, not their filled values.
 
-- [ ] **Step 5: Verify placeholders intact and team wording gone**
+- [x] **Step 5: Verify placeholders intact and team wording gone**
 
 ```bash
 cd /Users/farshad/projects/interlock
@@ -156,7 +156,7 @@ Expected: no `counter-sign` matches; the placeholder set lists `{{OWNER}} {{REPO
 {{FORMAT_CMD}} {{RUN_CMD}} {{CI_CHECK_NAME}} {{GERMLINE_GLOBS}}`; the GERMLINE_GLOBS line is
 present in loop-policy.md.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/cli/templates/constitution
@@ -173,7 +173,7 @@ git commit -m "chore(cli): vendor solo-form constitution template (placeholders 
 - Modify: `.gitignore` (ignore the generated module)
 - Test: `packages/cli/test/constitution-embed.test.ts`
 
-- [ ] **Step 1: Write the embed script**
+- [x] **Step 1: Write the embed script**
 
 `packages/cli/scripts/embed-templates.mjs`:
 
@@ -214,12 +214,12 @@ writeFileSync(
 console.log(`embedded ${files.length} template files → src/templates.generated.ts`);
 ```
 
-- [ ] **Step 2: Generate it and verify**
+- [x] **Step 2: Generate it and verify**
 
 Run: `node packages/cli/scripts/embed-templates.mjs`
 Expected: `embedded 14 template files → src/templates.generated.ts`, and the file exists.
 
-- [ ] **Step 3: Wire build + ignore the generated file**
+- [x] **Step 3: Wire build + ignore the generated file**
 
 In `packages/cli/package.json`, change `build` and add `prepublishOnly` so the embed runs first:
 
@@ -236,7 +236,7 @@ In root `.gitignore`, add a line:
 packages/cli/src/templates.generated.ts
 ```
 
-- [ ] **Step 4: Write the test (the generated module is loadable and complete)**
+- [x] **Step 4: Write the test (the generated module is loadable and complete)**
 
 `packages/cli/test/constitution-embed.test.ts`:
 
@@ -265,7 +265,7 @@ describe("embedded templates", () => {
 });
 ```
 
-- [ ] **Step 5: Run + commit**
+- [x] **Step 5: Run + commit**
 
 Run: `npx vitest run packages/cli/test/constitution-embed.test.ts`
 Expected: 2 pass.
@@ -285,7 +285,7 @@ git commit -m "build(cli): embed constitution templates into the bundle at build
 - Create: `packages/cli/src/constitution/detect.ts`
 - Test: `packages/cli/test/constitution-detect.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/constitution-detect.test.ts`:
 
@@ -330,12 +330,12 @@ describe("detectRepo", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-detect.test.ts`
 Expected: FAIL — cannot find module `../src/constitution/detect.js`.
 
-- [ ] **Step 3: Implement (part 1)**
+- [x] **Step 3: Implement (part 1)**
 
 `packages/cli/src/constitution/detect.ts`:
 
@@ -385,12 +385,12 @@ export function detectRepo(cwd: string, exec: Exec): RepoInfo {
 }
 ```
 
-- [ ] **Step 4: Run to verify pass**
+- [x] **Step 4: Run to verify pass**
 
 Run: `npx vitest run packages/cli/test/constitution-detect.test.ts`
 Expected: parseRemote + detectRepo tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/cli/src/constitution/detect.ts packages/cli/test/constitution-detect.test.ts
@@ -405,7 +405,7 @@ git commit -m "feat(cli): detectRepo + parseRemote for constitution scaffold"
 - Modify: `packages/cli/src/constitution/detect.ts` (append)
 - Test: `packages/cli/test/constitution-detect.test.ts` (append)
 
-- [ ] **Step 1: Append failing tests**
+- [x] **Step 1: Append failing tests**
 
 ```ts
 import { detectStack } from "../src/constitution/detect.js";
@@ -446,12 +446,12 @@ describe("detectStack", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-detect.test.ts`
 Expected: FAIL — `detectStack` is not exported.
 
-- [ ] **Step 3: Implement (append to detect.ts)**
+- [x] **Step 3: Implement (append to detect.ts)**
 
 ```ts
 export interface StackCommands {
@@ -509,7 +509,7 @@ export function detectStack(cwd: string): StackCommands {
 }
 ```
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-detect.test.ts`
 Expected: all pass.
@@ -527,7 +527,7 @@ git commit -m "feat(cli): detectStack (npm/uv/fallback) for constitution scaffol
 - Create: `packages/cli/src/constitution/render.ts`
 - Test: `packages/cli/test/constitution-render.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/constitution-render.test.ts`:
 
@@ -588,12 +588,12 @@ describe("OUTPUT_MAP", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: FAIL — cannot find module `../src/constitution/render.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/constitution/render.ts`:
 
@@ -651,7 +651,7 @@ export const OUTPUT_MAP: Record<string, string> = {
 };
 ```
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: all pass.
@@ -669,7 +669,7 @@ git commit -m "feat(cli): render — germlinePaths, buildValues, fillPlaceholder
 - Modify: `packages/cli/src/constitution/render.ts` (append)
 - Test: `packages/cli/test/constitution-render.test.ts` (append)
 
-- [ ] **Step 1: Append failing tests**
+- [x] **Step 1: Append failing tests**
 
 ```ts
 import { buildCi, buildClaudeMd } from "../src/constitution/render.js";
@@ -698,12 +698,12 @@ describe("buildClaudeMd", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: FAIL — `buildCi`/`buildClaudeMd` not exported.
 
-- [ ] **Step 3: Implement (append to render.ts)**
+- [x] **Step 3: Implement (append to render.ts)**
 
 ```ts
 export function buildCi(stack: StackCommands): string {
@@ -741,7 +741,7 @@ run /master-loop to operate the fleet. Status: shadow (see docs/agents/loop-poli
 }
 ```
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-render.test.ts`
 Expected: all pass.
@@ -759,7 +759,7 @@ git commit -m "feat(cli): render — stack-aware ci.yml + thin CLAUDE.md"
 - Create: `packages/cli/src/commands/constitution.ts`
 - Test: `packages/cli/test/constitution-scaffold.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `packages/cli/test/constitution-scaffold.test.ts`:
 
@@ -839,12 +839,12 @@ Replace the brittle `.catch?.` line with:
     expect(grep).toBe("");
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/constitution-scaffold.test.ts`
 Expected: FAIL — cannot find module `../src/commands/constitution.js`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `packages/cli/src/commands/constitution.ts`:
 
@@ -921,7 +921,7 @@ export function scaffoldConstitution(opts: ScaffoldOptions, io: ScaffoldIo): num
 (Remove the unused `getAuthorInfo`/`defaultExec` import line if your linter flags it — the
 per-call `exec` closure over `opts.cwd` is what's used.)
 
-- [ ] **Step 4: Run to verify pass, commit**
+- [x] **Step 4: Run to verify pass, commit**
 
 Run: `npx vitest run packages/cli/test/constitution-scaffold.test.ts`
 Expected: all pass (requires `npm run build -w packages/cli` first so `templates.generated.ts` exists — run `node packages/cli/scripts/embed-templates.mjs` if needed).
@@ -940,7 +940,7 @@ git commit -m "feat(cli): scaffoldConstitution — write filled templates + setu
 - Modify: `packages/cli/src/index.ts`
 - Test: `packages/cli/test/init.test.ts` (append)
 
-- [ ] **Step 1: Append failing tests to `packages/cli/test/init.test.ts`**
+- [x] **Step 1: Append failing tests to `packages/cli/test/init.test.ts`**
 
 ```ts
 import { buildPolicyYaml } from "../src/commands/init.js";
@@ -959,12 +959,12 @@ describe("buildPolicyYaml with germline (constitution mode)", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify fail**
+- [x] **Step 2: Run to verify fail**
 
 Run: `npx vitest run packages/cli/test/init.test.ts`
 Expected: FAIL — `buildPolicyYaml` takes 1 arg (TS error / wrong tier2).
 
-- [ ] **Step 3: Implement — extend `buildPolicyYaml` and `runInit` in `init.ts`**
+- [x] **Step 3: Implement — extend `buildPolicyYaml` and `runInit` in `init.ts`**
 
 Change the `buildPolicyYaml` signature to accept an optional germline flag and, when set, use
 `germlinePaths()` for tier2. Add this import at the top of `init.ts`:
@@ -1001,7 +1001,7 @@ Extend `InitOptions` with `withConstitution?: boolean` and, at the end of `runIn
 Also pass `withConstitution` into `buildPolicyYaml(detected, opts.withConstitution ?? false)` at
 the write site inside `runInit`.
 
-- [ ] **Step 4: Wire the flag in `index.ts`**
+- [x] **Step 4: Wire the flag in `index.ts`**
 
 In `packages/cli/src/index.ts`, on the `init` command add the option and thread it through:
 
@@ -1018,12 +1018,12 @@ In `packages/cli/src/index.ts`, on the `init` command add the option and thread 
   });
 ```
 
-- [ ] **Step 5: Run to verify pass + full suite + typecheck**
+- [x] **Step 5: Run to verify pass + full suite + typecheck**
 
 Run: `npx vitest run && npm run typecheck`
 Expected: all green.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/cli/src/commands/init.ts packages/cli/src/index.ts packages/cli/test/init.test.ts
@@ -1037,7 +1037,7 @@ git commit -m "feat(cli): init --with-constitution flag; germline-synced interlo
 **Files:**
 - Modify: `packages/cli/test/constitution-scaffold.test.ts` (append)
 
-- [ ] **Step 1: Append the integration test**
+- [x] **Step 1: Append the integration test**
 
 ```ts
 import { runInit } from "../src/commands/init.js";
@@ -1071,12 +1071,12 @@ describe("init --with-constitution (end to end)", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify pass**
+- [x] **Step 2: Run to verify pass**
 
 Run: `npx vitest run packages/cli/test/constitution-scaffold.test.ts`
 Expected: all pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/cli/test/constitution-scaffold.test.ts
@@ -1089,7 +1089,7 @@ git commit -m "test(cli): end-to-end --with-constitution scaffold + germline syn
 
 **Files:** none (verification only)
 
-- [ ] **Step 1: Rebuild the CLI bundle (with the embed step) and smoke-test**
+- [x] **Step 1: Rebuild the CLI bundle (with the embed step) and smoke-test**
 
 Run: `npm run build -w packages/cli`
 Expected: `embedded 14 template files …` then esbuild emits `dist/index.js`. The bundle is a
@@ -1106,12 +1106,12 @@ cd /; rm -rf "$P"
 ```
 Expected: "scaffold OK", "no placeholders ✓".
 
-- [ ] **Step 2: Full gate**
+- [x] **Step 2: Full gate**
 
 Run: `npx vitest run && npm run typecheck`
 Expected: everything green (existing 76 + the new constitution tests).
 
-- [ ] **Step 3: Commit any leftover (none expected) and stop for review**
+- [x] **Step 3: Commit any leftover (none expected) and stop for review**
 
 ```bash
 git status --short   # should be clean
