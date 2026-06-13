@@ -13,7 +13,9 @@ This package is the CLI. The companion GitHub Action posts the verdict on every 
 docs, the Action, and the design live at
 **[github.com/interlock-dev/interlock](https://github.com/interlock-dev/interlock)**.
 
-## Install & 10-minute path
+## One-minute setup
+
+Two steps — `init`, then paste — and you're done.
 
 ```bash
 npx agent-interlock init
@@ -21,11 +23,11 @@ npx agent-interlock init
 
 1. `init` writes an `interlock.yml` (in `observe` mode) and prints a GitHub Actions
    workflow to paste.
-2. Paste the workflow into `.github/workflows/interlock.yml`.
+2. Paste the workflow into `.github/workflows/interlock.yml`. That's the setup.
 3. Open any PR — Interlock posts a tier verdict as a sticky comment, an
    `interlock:tier-N` label, and a job summary.
-4. When you trust the verdicts, flip `mode: enforce` and make the `interlock` check
-   required in branch protection. That's minute 9 of the 10.
+4. Whenever you're ready to let the gate block (not part of setup): flip `mode: enforce`
+   and make the `interlock` check required in branch protection.
 
 ## The tiers
 

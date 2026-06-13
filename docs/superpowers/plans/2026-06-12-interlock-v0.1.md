@@ -55,7 +55,7 @@ interlock/
     dist/index.js                 # committed esbuild bundle
   interlock.yml                   # dogfood (Task 14)
   .github/workflows/interlock.yml # dogfood (Task 14)
-  README.md                       # 10-minute path (Task 15)
+  README.md                       # one-minute setup (Task 15)
 ```
 
 Rule of thumb throughout: **core is pure** (no fs, no network, no process). Anything impure lives in the adapters and is injected in tests.
@@ -2277,7 +2277,7 @@ git add -A && git commit -m "chore: dogfood — interlock governs its own reposi
 
 ---
 
-### Task 15: README — the 10-minute path
+### Task 15: README — the one-minute setup
 
 **Files:**
 - Create: `README.md`, `LICENSE`
@@ -2288,7 +2288,7 @@ Structure (write actual prose, not placeholders):
 
 1. One-line pitch: *Deterministic governance gate for AI-agent pull requests. One policy file; protected paths + reversibility-tiered merge rules, enforced in CI whatever tool wrote the code.*
 2. **Why** (3 sentences): agents are fast and occasionally catastrophic; reviewing everything kills the speed, trusting everything kills the repo. Interlock is the dial between those settings — and it's a fuse, not another AI: deterministic globs and rules, same verdict every time.
-3. **The 10 minutes** — exactly four steps with the commands from `init` (copy the real snippet, including `mode: observe` default and the note about flipping to `enforce` + making the check required).
+3. **The one-minute setup** — exactly four steps with the commands from `init` (copy the real snippet, including `mode: observe` default and the note about flipping to `enforce` + making the check required).
 4. **Policy reference** — the full annotated `interlock.yml` from `buildPolicyYaml` with every key explained in a table.
 5. **Semantics** — tier = max across files; renames count both paths; policy read from base ref; rule × mode matrix (observe/enforce × block/warn/require-review).
 6. **CLI** — `init` / `check --base --json` / `explain` with exit codes (0/1/2).

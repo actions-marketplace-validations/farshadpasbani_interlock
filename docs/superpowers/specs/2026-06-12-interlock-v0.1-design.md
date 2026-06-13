@@ -32,15 +32,15 @@ while the guard is open. This is that, for merges.
   reversibility of harm, protected paths, author classes) and makes it deterministic code.
   The product is the law without the sermon.
 
-## Day-1 adopter and the 10-minute path
+## Day-1 adopter and the one-minute setup
 
 **Adopter:** the solo agentic builder running Claude Code / Codex fleets on their own repos.
 
-**The 10 minutes:**
-1. `npx agent-interlock init` → interactive scaffold writes `interlock.yml` (~3 min)
-2. Add the Action workflow file (printed by `init`, one paste) (~2 min)
-3. Open any PR → tier verdict appears as check + comment + label (the wow) (~2 min)
-4. Optional, documented as "minute 9": flip `mode: enforce` and make the check required in
+**The minute (actual setup is two steps):**
+1. `npx agent-interlock init` → scaffold writes `interlock.yml` (~30 s)
+2. Add the Action workflow file (printed by `init`, one paste) (~30 s) — setup done
+3. Open any PR → tier verdict appears as check + comment + label (the wow) — not setup, just the gate working
+4. Later opt-in (not part of setup): flip `mode: enforce` and make the check required in
    branch protection.
 
 **First wow = passive tier verdict on every PR.** No merge rights requested on day 1; the
@@ -172,7 +172,7 @@ human-readable message (line/field).
 - `packages/core` engine + policy schema
 - CLI: `init`, `check`, `explain`
 - GitHub Action: verdict check + sticky comment + label, observe & enforce modes
-- Docs: README with the 10-minute path; GitHub Marketplace listing
+- Docs: README with the one-minute setup; GitHub Marketplace listing
 
 **v0.2:** Claude Code hook adapter — the same `interlock.yml` blocks protected-path edits
 locally at the harness level (the cross-platform proof in code).
@@ -184,7 +184,7 @@ PRs (requires `contents: write`; gated behind explicit policy setting).
 agent-fleet operating manual (the founder's constitution), via `interlock init
 --with-constitution` and/or a companion `interlock-dev/constitution` repo. **Published
 beside the product, never bundled into the core:** Interlock stays the deterministic fuse a
-stranger installs in 10 minutes; the constitution is the philosophy layer believers opt
+stranger installs in about a minute; the constitution is the philosophy layer believers opt
 into after the gate has earned trust. The constitution also serves as the flagship launch
 content piece (the "governed fleet built this governor" story).
 

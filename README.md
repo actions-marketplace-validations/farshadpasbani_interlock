@@ -6,7 +6,9 @@ Deterministic governance gate for AI-agent pull requests. One policy file; prote
 
 Agents are fast and occasionally catastrophic. Reviewing every PR yourself kills the speed advantage; trusting everything kills the repo's invariants. Interlock is the dial between — and it's a fuse, not another AI: deterministic glob matching and rule evaluation, same verdict every time. No LLM judges your PR. The policy is a YAML file you can read and reason about in under five minutes, and the gate cannot silently fail open.
 
-## The 10-minute install
+## One-minute setup
+
+Two steps — `init`, then paste — and you're done. Everything after is the gate doing its job.
 
 1. **Initialise the policy:**
 
@@ -36,7 +38,7 @@ Agents are fast and occasionally catastrophic. Reviewing every PR yourself kills
 
 3. **Open any PR.** Interlock posts its first verdict as a sticky comment, applies an `interlock:tier-N` label, and writes a job summary table (file → tier → matched rule). In observe mode the job always passes — you are watching, not blocking.
 
-4. **When you trust the verdicts:** flip `mode: enforce` in `interlock.yml` and add `interlock` as a required status check in your branch protection settings. Minute 9 of the 10.
+4. **When you trust the verdicts:** flip `mode: enforce` in `interlock.yml` and add `interlock` as a required status check in your branch protection settings. Do this whenever you're ready — it's not part of setup, it's the moment you let the gate start blocking.
 
 ## The tiers
 
