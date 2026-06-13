@@ -25,7 +25,7 @@ the rules:
 - **Shadow commissioning:** a new setup runs in shadow (would-have-merged labels, no real
   merges) until you've audited it enough to flip it live.
 
-Full charter (it's public): [CONSTITUTION.md link]
+Full charter (it's public): https://github.com/farshadpasbani/interlock/blob/main/docs/agents/CONSTITUTION.md
 
 The part that must be mechanical — tiers, protected paths, "an agent can't touch the
 load-bearing walls" — I extracted into deterministic code, because prose an agent "mostly
@@ -46,7 +46,7 @@ merge authority — not the other way around.
 Apache-2.0, runs on your own GitHub Actions, no hosted service. **v0.2** is a Claude Code
 hook so the same policy blocks protected-path edits locally, before the PR even exists.
 
-- Essay (the why): [manifesto link]
+- Essay (the why): https://farshadpasbani.github.io/interlock/
 - Repo: https://github.com/farshadpasbani/interlock
 
 Genuinely curious what paths you'd mark Tier 2 in your own setup — everyone's "never let an

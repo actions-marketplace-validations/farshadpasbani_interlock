@@ -34,9 +34,10 @@ platform-absorption pre-mortem. Lead with the idea; close with the install.
 
 ## Before posting — fill these in
 
-- [ ] Replace `[essay link]` / `[manifesto link]` placeholders with the real blog URL.
-- [ ] Confirm the `CONSTITUTION.md` link resolves (it does today:
-      https://github.com/farshadpasbani/interlock/blob/main/docs/agents/CONSTITUTION.md ).
+- [x] Essay URLs filled: https://farshadpasbani.github.io/interlock/ (manifesto) and
+      https://farshadpasbani.github.io/interlock/loop/ (loop). Posts are link-ready.
+- [x] `CONSTITUTION.md` link resolves:
+      https://github.com/farshadpasbani/interlock/blob/main/docs/agents/CONSTITUTION.md
 - [ ] GitHub Marketplace listing is live (so "search the Marketplace" works for readers).
 - [ ] `npx agent-interlock init` smoke-tested from a clean machine one more time.
 - [ ] Decide whether to soft-launch (one channel, gather feedback, fix, then the rest) or

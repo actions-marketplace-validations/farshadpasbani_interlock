@@ -69,7 +69,7 @@ v0.1. Apache-2.0. Runs on your own CI, nothing hosted.
 npx agent-interlock init
 ```
 
-Essay (the why): [link]
+Essay (the why): https://farshadpasbani.github.io/interlock/
 Repo: github.com/farshadpasbani/interlock
 
 If you run agents: which paths would you never let one touch?
