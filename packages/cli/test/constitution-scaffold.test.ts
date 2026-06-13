@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { scaffoldConstitution } from "../src/commands/constitution.js";
+import { runInit } from "../src/commands/init.js";
 
 function gitRepo(): string {
   const d = mkdtempSync(join(tmpdir(), "scaffold-"));
@@ -60,5 +61,27 @@ describe("scaffoldConstitution", () => {
     const text = out.join("\n");
     expect(text).toMatch(/branch protection/i);
     expect(text).toMatch(/gh label create|labels/i);
+  });
+});
+
+describe("init --with-constitution (end to end)", () => {
+  it("scaffolds a coherent, placeholder-free, germline-synced repo", () => {
+    const d = gitRepo();
+    const code = runInit({ cwd: d, force: false, withConstitution: true }, { log: () => {}, error: () => {} });
+    expect(code).toBe(0);
+
+    // interlock.yml tier2 and loop-policy germline globs agree (single source)
+    const policyYml = readFileSync(join(d, "interlock.yml"), "utf8");
+    const loopPolicy = readFileSync(join(d, "docs/agents/loop-policy.md"), "utf8");
+    for (const g of ["docs/agents/**", ".github/workflows/**", ".github/CODEOWNERS", "interlock.yml"]) {
+      expect(policyYml, "interlock.yml tier2").toContain(`"${g}"`);
+      expect(loopPolicy, "loop-policy globs").toContain(`\`${g}\``);
+    }
+
+    // CI job is named `checks` to match SETUP / branch-protection guidance
+    expect(readFileSync(join(d, ".github/workflows/ci.yml"), "utf8")).toContain("checks:");
+
+    // no placeholder anywhere in the written tree
+    expect(grepPlaceholders(d), "surviving placeholders").toBe("");
   });
 });
