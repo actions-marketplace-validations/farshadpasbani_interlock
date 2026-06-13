@@ -19,3 +19,10 @@ jobs:
         run: |
           npm run build -w action
           git diff --quiet -- action/dist || { echo "::error::action/dist is stale — run npm run build -w action and commit"; exit 1; }
+      - name: Action bundle runs under the Actions loader
+        run: |
+          set +e
+          out=$(node action/dist/index.cjs 2>&1); code=$?
+          set -e
+          echo "$out" | grep -q "github-token" || { echo "::error::bundle did not reach input parsing: $out"; exit 1; }
+          test "$code" -eq 1 || { echo "::error::expected exit 1 from missing input, got $code"; exit 1; }
