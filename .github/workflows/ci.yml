@@ -13,6 +13,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Embedded constitution templates are reproducible
+        run: |
+          node packages/cli/scripts/embed-templates.mjs
+          git diff --quiet -- packages/cli/src/templates.generated.ts || { echo "::error::templates.generated.ts is stale — run npm run build -w packages/cli and commit"; exit 1; }
       - run: npm run typecheck
       - run: npx vitest run
       - name: Action bundle is reproducible

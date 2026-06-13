@@ -2,4 +2,3 @@ node_modules/
 dist/
 !action/dist/
 *.tsbuildinfo
-packages/cli/src/templates.generated.ts
