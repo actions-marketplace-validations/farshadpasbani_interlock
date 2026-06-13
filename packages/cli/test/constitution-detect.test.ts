@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { detectRepo, parseRemote } from "../src/constitution/detect.js";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { detectRepo, detectStack, parseRemote } from "../src/constitution/detect.js";
+
+function tmp(files: Record<string, string>): string {
+  const d = mkdtempSync(join(tmpdir(), "stack-"));
+  for (const [p, c] of Object.entries(files)) {
+    mkdirSync(join(d, p, ".."), { recursive: true });
+    writeFileSync(join(d, p), c);
+  }
+  return d;
+}
 
 describe("parseRemote", () => {
   it("parses https remotes", () => {
@@ -34,5 +46,29 @@ describe("detectRepo", () => {
     const r = detectRepo("/x", exec);
     expect(r.detected).toBe(false);
     expect(r.owner).toBe("OWNER");
+  });
+});
+
+describe("detectStack", () => {
+  it("maps npm scripts when package.json present", () => {
+    const d = tmp({ "package.json": JSON.stringify({ scripts: { test: "vitest", typecheck: "tsc --noEmit" } }) });
+    const s = detectStack(d);
+    expect(s.install).toBe("npm install");
+    expect(s.test).toBe("npm test");
+    expect(s.typecheck).toBe("npm run typecheck");
+    expect(s.ciName).toBe("checks");
+    expect(s.detected).toBe(true);
+  });
+  it("uses uv when pyproject + uv.lock present", () => {
+    const d = tmp({ "pyproject.toml": "[project]", "uv.lock": "" });
+    const s = detectStack(d);
+    expect(s.install).toBe("uv sync");
+    expect(s.test).toBe("uv run pytest");
+  });
+  it("falls back generically when nothing recognised", () => {
+    const d = tmp({ "README.md": "x" });
+    const s = detectStack(d);
+    expect(s.detected).toBe(false);
+    expect(s.test).toContain("TODO");
   });
 });
